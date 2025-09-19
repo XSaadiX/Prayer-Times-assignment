@@ -1,0 +1,14 @@
+/* Basic Styles for Prayer Times App */
+
+/* TODO: Style page layout, dropdowns, table, banner, and buttons */
+body {
+  font-family: Arial, sans-serif;
+  margin: 20px;
+  text-align: center;
+}
+
+#selectors, #prayerTableContainer, #nextPrayerBanner {
+  margin: 20px 0;
+}
+
+/* TODO: Make UI responsive for mobile and desktop */
