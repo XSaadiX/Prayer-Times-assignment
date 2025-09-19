@@ -39,8 +39,24 @@ export async function fetchCitiesByCountry(country) {
   }
 }
 
-// TODO: Fetch prayer times from Aladhan API
+
 export async function fetchPrayerTimes(city, country, method) {
-  // Example endpoint: https://api.aladhan.com/v1/timingsByCity
-  // TODO: Return only Fajr, Dhuhr, Asr, Maghrib, Isha
+  try {
+    const url =`https://api.aladhan.com/v1/timingsByCity?city=${encodeURIComponent(city)}&country=${encodeURIComponent(country)}&method=${method}`
+    const res =await fetch(url);
+    if (!res.ok) 
+      throw new Error('Failed to fetch prayer times');
+    const data =await res.json();
+    const times =data.data.timings;
+    return {
+      Fajr:times.Fajr,
+      Dhuhr:times.Dhuhr,
+      Asr:times.Asr,
+      Maghrib:times.Maghrib,
+      Isha:times.Isha,
+    }
+  }catch(error) {
+    console.error(error);
+    return {};
+  }
 }
