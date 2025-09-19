@@ -61,13 +61,12 @@ Users can select **Continent → Country → City → Calculation Method** and v
 ---
 
 ## Team & Tasks
-| Team Member | Task Assignment | Files |
-|---|---|---|
-| **XSaadiX** | Repo setup, starter code, final integration & reviews | `app.js`, README |
-| **XSaadiX** | API integration (Countries, Cities, Prayer Times) | `api.js` |
-| **Mahmoud Hamo** | UI rendering: Table, Dropdowns, Next Prayer Banner | `app.js`, `style.css` |
-| **Noor Al-Afifi** | Countdown Timer + LocalStorage persistence | `utils.js` |
-| **Nora Al-Ashqar** | Error handling, Responsiveness, Polishing & Testing | `app.js`, `style.css` |
+| Team Member       | Task Assignment                                              | Files                       |
+|-------------------|-------------------------------------------------------------|-----------------------------|
+| **XSaadiX**        | Repo setup, starter code, main app logic, final integration & reviews | `app.js`, `README.md`        |
+| **Mahmoud Hamo**   | UI rendering: Dropdowns, Prayer Table, Next Prayer Banner, Styling | `index.html`, `style.css`    |
+| **Noor Al-Afifi**  | Countdown Timer logic, LocalStorage save/load/reset functions       | `utils.js`                   |
+| **Nora Al-Ashqar** | API integration (Countries, Cities, Prayer Times) & Error Handling | `api.js`, `app.js`           |
 
 ---
 
