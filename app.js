@@ -92,6 +92,10 @@ function startNextPrayerCountdown() {
     time,
     (remaining) => {
       // TODO [Noor]: Update countdown UI every second
+      const el = document.getElementById("countdown");
+      if (el) {
+        el.textContent = `Next: ${name} in ${remaining}`;
+      }
     },
     () => {
       // When countdown ends → refresh prayer times
