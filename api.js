@@ -6,7 +6,7 @@ export async function fetchCountriesByContinent(continent) {
   // TODO: Return array of country names
 }
 
-// TODO: Fetch cities by country from CountriesNow API (with caching)
+// TODO: Fetch cities by country from CountriesNow API 
 export async function fetchCitiesByCountry(country) {
   // Example endpoint: https://countriesnow.space/api/v0.1/countries/cities
   // TODO: Implement caching to avoid repeated calls
