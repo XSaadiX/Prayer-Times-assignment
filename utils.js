@@ -74,7 +74,13 @@ export function saveSelections(selections) {
 }
 export function loadSelections() {
   const data = localStorage.getItem(STORAGE_KEY);
-  return data ? JSON.parse(data) : null;
+  if (!data) return null;
+  try {
+    return JSON.parse(data);
+  } catch (e) {
+    // Optionally clear corrupted data: localStorage.removeItem(STORAGE_KEY);
+    return null;
+  }
 }
 export function clearSelections() {
   localStorage.removeItem(STORAGE_KEY);
