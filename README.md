@@ -25,16 +25,29 @@ Users can select **Continent → Country → City → Calculation Method** and v
 
 ---
 
-## File Structure
+## 📁 Files & TODOs
 
-prayer-times-app/
-│── index.html # Main HTML
-│── style.css # Basic styling
-│── app.js # Main logic & UI updates
-│── api.js # API calls for countries, cities, prayer times
-│── utils.js # Timer, localStorage, helper functions
-│── README.md # Project documentation
+### index.html
+- [ ] Add dropdowns for continent, country, city, and calculation method
+- [ ] Add table for prayer times
+- [ ] Add next prayer banner with countdown timer
+- [ ] Add reset button
 
+### style.css
+- [ ] Style the layout, table, dropdowns, and banner
+- [ ] Make the UI responsive and mobile-friendly
+
+### app.js
+- [ ] Fetch countries by continent (REST Countries API)
+- [ ] Fetch cities by country (CountriesNow API with caching)
+- [ ] Fetch prayer times (Aladhan API)
+- [ ] Render prayer table with 5 main prayers
+- [ ] Implement next prayer timer (HH:MM:SS)
+- [ ] Handle errors gracefully
+- [ ] Persist user selection in localStorage
+- [ ] Reset button to clear UI & localStorage
+
+---
 
 ---
 
