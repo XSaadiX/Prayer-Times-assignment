@@ -1,28 +1,89 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Prayer Times App</title>
-  <link rel="stylesheet" href="style.css" />
-</head>
-<body>
-  <h1>Prayer Times App</h1>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Prayer Times App</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <h1>Prayer Times App</h1>
 
-  <!-- TODO: Add continent, country, city, and calculation method dropdowns -->
-  <div id="selectors">
-    <!-- Example: <select id="continentSelect"></select> -->
-  </div>
+    <!-- TODO: Add continent, country, city, and calculation method dropdowns -->
+    <div id="selectors">
+      <div class="selector-group">
+        <label for="continentSelect">Continent</label>
+        <select id="continentSelect">
+          <option value="" disabled selected>Select Continent</option>
+        </select>
+      </div>
+      <div class="selector-group">
+        <label for="countrySelect">Country</label>
+        <select id="countrySelect">
+          <option value="" disabled selected>Select Country</option>
+        </select>
+      </div>
+      <div class="selector-group">
+        <label for="citySelect">City</label>
+        <select id="citySelect">
+          <option value="" disabled selected>Select City</option>
+        </select>
+      </div>
+      <div class="selector-group">
+        <label for="methodSelect">Calculation Method</label>
+        <select id="methodSelect">
+          <option value="" disabled selected>Select Calculation Method</option>
+        </select>
+      </div>
+    </div>
 
-  <!-- TODO: Add table for the 5 prayer times (Fajr, Dhuhr, Asr, Maghrib, Isha) -->
-  <div id="prayerTableContainer"></div>
+    <!-- TODO: Add table for the 5 prayer times (Fajr, Dhuhr, Asr, Maghrib, Isha) -->
+    <div id="prayerTableContainer">
+      <table id="prayerTable">
+        <caption>
+          Daily Prayer Times
+        </caption>
+        <thead>
+          <tr>
+            <th>Prayer</th>
+            <th>Time</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Fajr</td>
+            <td id="fajrTime">---</td>
+          </tr>
+          <tr>
+            <td>Dhuhr</td>
+            <td id="dhuhrTime">---</td>
+          </tr>
+          <tr>
+            <td>Asr</td>
+            <td id="asrTime">---</td>
+          </tr>
+          <tr>
+            <td>Maghrib</td>
+            <td id="maghribTime">---</td>
+          </tr>
+          <tr>
+            <td>Isha</td>
+            <td id="ishaTime">---</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
 
-  <!-- TODO: Add next prayer banner with countdown timer -->
-  <div id="nextPrayerBanner"></div>
+    <!-- TODO: Add next prayer banner with countdown timer -->
+    <div id="nextPrayerBanner">
+      <p id="nextPrayerName">Next Prayer:</p>
+      <p id="countdown">00:00:00</p>
+      <p id="nextPrayerTime">today/tomorrow</p>
+    </div>
 
-  <!-- TODO: Add reset button to clear everything -->
-  <button id="resetBtn">Reset</button>
+    <!-- TODO: Add reset button to clear everything -->
+    <button id="resetBtn">Reset</button>
 
-  <script src="app.js" type="module"></script>
-</body>
+    <script src="app.js" type="module"></script>
+  </body>
 </html>
