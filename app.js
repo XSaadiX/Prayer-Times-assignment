@@ -78,6 +78,10 @@ async function handleFetchPrayerTimes() {
   } catch (error) {
     // TODO [Nora]: Show user-friendly error message in UI
     console.error(error);
+    const errorEl=document.getElementById("errorMessage");
+    errorEl.innerText="Unable to load prayer times.Please try again later.";
+    errorEl.style.display="block";
+    errorEl.style.textAlign="center";
   }
 }
 
