@@ -29,7 +29,8 @@ const maghrib_Time = document.getElementById("maghribTime");
 const isha_Time = document.getElementById("ishaTime");
 
 const timesArr = [fajr_Time, dhuhr_Time, asr_Time, maghrib_Time, isha_Time];
-
+PopulateContinents();
+PopulateMethods();
 // ===== Initialization =====
 async function init() {
   console.log("App Initialized");
@@ -62,11 +63,17 @@ async function init() {
   }
 }
 
+async function PopulateContinents() {
+  const continents = ["africa", "asia", "europe", "americas", "oceania"];
+  continents.forEach((continent) => {
+    const option = document.createElement("option");
+    option.value = continent;
+    option.textContent = continent;
+    continentSelect.appendChild(option);
+  });
+}
+
 function PopulateCountry(countries) {
-  countrySelect.length = 1;
-  countrySelect.selectedIndex = 0;
-  selections.country = "";
-  ClearTable();
   countries.forEach((country) => {
     const option = document.createElement("option");
     option.value = country;
@@ -76,15 +83,22 @@ function PopulateCountry(countries) {
 }
 
 function PopulateCity(cities) {
-  citySelect.length = 1;
-  citySelect.selectedIndex = 0;
-  selections.city = "";
-  ClearTable();
   cities.forEach((city) => {
     const option = document.createElement("option");
     option.value = city;
     option.textContent = city;
     citySelect.appendChild(option);
+  });
+}
+
+async function PopulateMethods() {
+  const res = await fetch("https://api.aladhan.com/v1/methods");
+  const data = await res.json();
+  Object.entries(data.data).forEach(([id, method]) => {
+    const option = document.createElement("option");
+    option.value = id;
+    option.textContent = method.name;
+    methodSelect.appendChild(option);
   });
 }
 
@@ -118,10 +132,16 @@ function setupEventListeners() {
     console.log("City selected:", selections.city);
   });
 
-  document.getElementById("methodSelect").addEventListener("change", (e) => {
-    selections.method = e.target.value;
-    console.log("Method selected:", selections.method);
-  });
+  document
+    .getElementById("methodSelect")
+    .addEventListener("change", async (e) => {
+      selections.method = e.target.value;
+      console.log("Method selected:", selections.method);
+
+      if (selections.city && selections.country && selections.method) {
+        await handleFetchPrayerTimes();
+      }
+    });
 
   document.getElementById("resetBtn").addEventListener("click", handleReset);
 }
@@ -142,17 +162,26 @@ async function handleFetchPrayerTimes() {
       selections.method
     );
 
+    console.log("Fetched Prayer Times:", prayerTimes);
+
     // TODO [Mahmoud]: Render prayer times table in the UI
     const prayerOrder = ["Fajr", "Dhuhr", "Asr", "Maghrib", "Isha"];
     timesArr.forEach((cell) => (cell.textContent = "---"));
     prayerOrder.forEach((prayer, index) => {
-      timesArr[index].textContent = formatTime(prayerTimes[prayer]);
+      const [h, m] = prayerTimes[prayer].split(":").map(Number);
+      const dateObj = new Date();
+      dateObj.setHours(h, m, 0, 0);
+      timesArr[index].textContent = formatTime(dateObj);
     });
     // TODO [Noor]: Start countdown for next prayer
     startNextPrayerCountdown();
   } catch (error) {
     // TODO [Nora]: Show user-friendly error message in UI
     console.error(error);
+    const errorEl = document.getElementById("errorMessage");
+    errorEl.innerText = "Unable to load prayer times.Please try again later.";
+    errorEl.style.display = "block";
+    errorEl.style.textAlign = "center";
   }
 }
 
@@ -161,12 +190,32 @@ function startNextPrayerCountdown() {
   if (countdownInterval) clearInterval(countdownInterval);
 
   const { name, time } = getNextPrayer(prayerTimes);
-  console.log(`Next prayer: ${name} at ${time}`);
+  const [h, m] = time.split(":").map(Number);
 
+  const nextPrayerDate = new Date();
+  nextPrayerDate.setHours(h, m, 0, 0);
+
+  const now = new Date();
+
+  if (nextPrayerDate <= now) {
+    nextPrayerDate.setDate(nextPrayerDate.getDate() + 1);
+  }
+
+  // if (countdownInterval) countdownInterval();
   countdownInterval = startCountdown(
     time,
     (remaining) => {
       // TODO [Noor]: Update countdown UI every second
+      const el = document.getElementById("countdown");
+
+      if (el) {
+        document.getElementById(
+          "nextPrayerName"
+        ).textContent = ` Next Prayer is : ${name}`;
+        el.textContent = `remaining time : ${remaining}`;
+        document.getElementById("nextPrayerTime").textContent =
+          nextPrayerDate.getDate() === now.getDate() ? "today" : "tomorrow";
+      }
     },
     () => {
       // When countdown ends → refresh prayer times
@@ -175,25 +224,18 @@ function startNextPrayerCountdown() {
   );
 }
 
-function ClearTable() {
-  document.getElementById("nextPrayerName").textContent = "Next Prayer:";
-  document.getElementById("countdown").textContent = "00:00:00";
-  document.getElementById("nextPrayerTime").textContent = "today/tomorrow";
-
-  timesArr.forEach((time) => {
-    time.textContent = "---";
-  });
-}
-
 // ===== Reset All Data =====
 function handleReset() {
   clearSelections();
   selections = { continent: "", country: "", city: "", method: "" };
   prayerTimes = {};
-  if (countdownInterval) clearInterval(countdownInterval);
-
+  if (countdownInterval) {
+    // clearInterval(countdownInterval);
+    countdownInterval();
+    countdownInterval = null;
+  }
   // TODO [Mahmoud]: Reset UI (dropdowns, table, countdown display)
-  continentSelect.length = 1;
+
   continentSelect.selectedIndex = 0;
 
   countrySelect.length = 1;
@@ -202,14 +244,25 @@ function handleReset() {
   citySelect.length = 1;
   citySelect.selectedIndex = 0;
 
-  methodSelect.length = 1;
   methodSelect.selectedIndex = 0;
 
   ClearTable();
 
-  countdownInterval = null;
+  setTimeout(() => {
+    init();
+  }, 0);
 
   console.log("All selections cleared");
+}
+
+function ClearTable() {
+  document.getElementById("nextPrayerName").textContent = "Next Prayer : ";
+  document.getElementById("countdown").textContent = "00:00:00";
+  document.getElementById("nextPrayerTime").textContent = "today/tomorrow";
+
+  timesArr.forEach((time) => {
+    time.textContent = "---";
+  });
 }
 
 init();
