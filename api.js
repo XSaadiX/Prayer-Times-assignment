@@ -2,9 +2,7 @@
 
 export async function fetchCountriesByContinent(continent) {
   try {
-    const res = await fetch(
-      `https://restcountries.com/v3.1/region/${continent}`
-    );
+    const res = await fetch(`https://restcountries.com/v3.1/region/${continent}`);
     if (!res.ok) throw new Error("Failed to fetch countries");
 
     const data = await res.json();
@@ -21,17 +19,15 @@ export async function fetchCitiesByCountry(country) {
     return cityCache.get(country);
   }
   try {
-    const res = await fetch(
-      "https://countriesnow.space/api/v0.1/countries/cities",
-      {
-        method: "POST",
-        body: JSON.stringify({ country }),
-        headers: {
-          "Content-Type": "application/json",
-        },
-      }
-    );
+    const res = await fetch("https://countriesnow.space/api/v0.1/countries/cities", {
+      method: "POST",
+      body: JSON.stringify({ country }),
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
     if (!res.ok) throw new Error("Failed to fetch cities");
+
     const data = await res.json();
     const cities = data.data || [];
     cityCache.set(country, cities);
@@ -49,6 +45,7 @@ export async function fetchPrayerTimes(city, country, method) {
     )}&country=${encodeURIComponent(country)}&method=${method}`;
     const res = await fetch(url);
     if (!res.ok) throw new Error("Failed to fetch prayer times");
+
     const data = await res.json();
     const times = data.data.timings;
     return {

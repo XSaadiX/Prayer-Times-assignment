@@ -1,3 +1,5 @@
+// Prayer Times App Main Script
+
 import {
   fetchCountriesByContinent,
   fetchCitiesByCountry,
@@ -29,20 +31,19 @@ const maghrib_Time = document.getElementById("maghribTime");
 const isha_Time = document.getElementById("ishaTime");
 
 const timesArr = [fajr_Time, dhuhr_Time, asr_Time, maghrib_Time, isha_Time];
+
 PopulateContinents();
 PopulateMethods();
+
 // ===== Initialization =====
 async function init() {
   console.log("App Initialized");
 
-  // Load saved selections from localStorage
   const saved = loadSelections();
   if (saved) {
     selections = saved;
-    // TODO [Mahmoud]: Populate dropdowns with saved values in the UI
 
     continentSelect.value = saved.continent;
-
     const countries = await fetchCountriesByContinent(selections.continent);
     PopulateCountry(countries);
     countrySelect.value = saved.country;
@@ -54,10 +55,8 @@ async function init() {
     methodSelect.value = saved.method;
   }
 
-  // Set up event listeners
   setupEventListeners();
 
-  // If we already have saved selections, fetch prayer times automatically
   if (saved && saved.city && saved.country && saved.method) {
     handleFetchPrayerTimes();
   }
@@ -104,44 +103,31 @@ async function PopulateMethods() {
 
 // ===== Event Listeners =====
 function setupEventListeners() {
-  document
-    .getElementById("continentSelect")
-    .addEventListener("change", async (e) => {
-      selections.continent = e.target.value;
+  continentSelect.addEventListener("change", async (e) => {
+    selections.continent = e.target.value;
+    const countries = await fetchCountriesByContinent(selections.continent);
+    PopulateCountry(countries);
+  });
 
-      // Fetch countries after continent selection
-      const countries = await fetchCountriesByContinent(selections.continent);
-      PopulateCountry(countries);
-    });
-  // TODO [Mahmoud]: Populate "countrySelect" dropdown with countries
+  countrySelect.addEventListener("change", async (e) => {
+    selections.country = e.target.value;
+    const cities = await fetchCitiesByCountry(selections.country);
+    PopulateCity(cities);
+  });
 
-  document
-    .getElementById("countrySelect")
-    .addEventListener("change", async (e) => {
-      selections.country = e.target.value;
-
-      // Fetch cities after country selection
-      const cities = await fetchCitiesByCountry(selections.country);
-
-      // TODO [Mahmoud]: Populate "citySelect" dropdown with cities
-      PopulateCity(cities);
-    });
-
-  document.getElementById("citySelect").addEventListener("change", (e) => {
+  citySelect.addEventListener("change", (e) => {
     selections.city = e.target.value;
     console.log("City selected:", selections.city);
   });
 
-  document
-    .getElementById("methodSelect")
-    .addEventListener("change", async (e) => {
-      selections.method = e.target.value;
-      console.log("Method selected:", selections.method);
+  methodSelect.addEventListener("change", async (e) => {
+    selections.method = e.target.value;
+    console.log("Method selected:", selections.method);
 
-      if (selections.city && selections.country && selections.method) {
-        await handleFetchPrayerTimes();
-      }
-    });
+    if (selections.city && selections.country && selections.method) {
+      await handleFetchPrayerTimes();
+    }
+  });
 
   document.getElementById("resetBtn").addEventListener("click", handleReset);
 }
@@ -153,7 +139,7 @@ async function handleFetchPrayerTimes() {
     return;
   }
 
-  saveSelections(selections); // Persist selections in localStorage
+  saveSelections(selections);
 
   try {
     prayerTimes = await fetchPrayerTimes(
@@ -164,7 +150,6 @@ async function handleFetchPrayerTimes() {
 
     console.log("Fetched Prayer Times:", prayerTimes);
 
-    // TODO [Mahmoud]: Render prayer times table in the UI
     const prayerOrder = ["Fajr", "Dhuhr", "Asr", "Maghrib", "Isha"];
     timesArr.forEach((cell) => (cell.textContent = "---"));
     prayerOrder.forEach((prayer, index) => {
@@ -173,13 +158,12 @@ async function handleFetchPrayerTimes() {
       dateObj.setHours(h, m, 0, 0);
       timesArr[index].textContent = formatTime(dateObj);
     });
-    // TODO [Noor]: Start countdown for next prayer
+
     startNextPrayerCountdown();
   } catch (error) {
-    // TODO [Nora]: Show user-friendly error message in UI
     console.error(error);
     const errorEl = document.getElementById("errorMessage");
-    errorEl.innerText = "Unable to load prayer times.Please try again later.";
+    errorEl.innerText = "Unable to load prayer times. Please try again later.";
     errorEl.style.display = "block";
     errorEl.style.textAlign = "center";
   }
@@ -196,29 +180,22 @@ function startNextPrayerCountdown() {
   nextPrayerDate.setHours(h, m, 0, 0);
 
   const now = new Date();
-
   if (nextPrayerDate <= now) {
     nextPrayerDate.setDate(nextPrayerDate.getDate() + 1);
   }
 
-  // if (countdownInterval) countdownInterval();
   countdownInterval = startCountdown(
     time,
     (remaining) => {
-      // TODO [Noor]: Update countdown UI every second
       const el = document.getElementById("countdown");
-
       if (el) {
-        document.getElementById(
-          "nextPrayerName"
-        ).textContent = ` Next Prayer is : ${name}`;
-        el.textContent = `remaining time : ${remaining}`;
+        document.getElementById("nextPrayerName").textContent = `Next Prayer: ${name}`;
+        el.textContent = `Remaining time: ${remaining}`;
         document.getElementById("nextPrayerTime").textContent =
           nextPrayerDate.getDate() === now.getDate() ? "today" : "tomorrow";
       }
     },
     () => {
-      // When countdown ends → refresh prayer times
       handleFetchPrayerTimes();
     }
   );
@@ -230,20 +207,15 @@ function handleReset() {
   selections = { continent: "", country: "", city: "", method: "" };
   prayerTimes = {};
   if (countdownInterval) {
-    // clearInterval(countdownInterval);
     countdownInterval();
     countdownInterval = null;
   }
-  // TODO [Mahmoud]: Reset UI (dropdowns, table, countdown display)
 
   continentSelect.selectedIndex = 0;
-
   countrySelect.length = 1;
   countrySelect.selectedIndex = 0;
-
   citySelect.length = 1;
   citySelect.selectedIndex = 0;
-
   methodSelect.selectedIndex = 0;
 
   ClearTable();
@@ -256,7 +228,7 @@ function handleReset() {
 }
 
 function ClearTable() {
-  document.getElementById("nextPrayerName").textContent = "Next Prayer : ";
+  document.getElementById("nextPrayerName").textContent = "Next Prayer: ";
   document.getElementById("countdown").textContent = "00:00:00";
   document.getElementById("nextPrayerTime").textContent = "today/tomorrow";
 
